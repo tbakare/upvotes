@@ -12,16 +12,21 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.upvotes.security.Authority;
 
 @Entity
 @Table(name="users")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class User {
 	private int id;
 	private String username;
 	private String password;
 	private String name;
-	Set<Authority> authorities = new HashSet<>();
+	private Set<Authority> authorities = new HashSet<>();
+	private Set<Product> products = new HashSet<>();
+	private Set<Feature> features = new HashSet<>();
 
 	
 	@Id
@@ -59,9 +64,24 @@ public class User {
 	public void setAuthorities(Set<Authority> authorities) {
 		this.authorities = authorities;
 	}
+	
+	@OneToMany(cascade= CascadeType.PERSIST, fetch = FetchType.LAZY , mappedBy="user")
+	public Set<Product> getProducts() {
+		return products;
+	}
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name
 				+ ", authorities=" + authorities + "]";
+	}
+	@OneToMany(cascade= CascadeType.PERSIST, fetch = FetchType.LAZY , mappedBy="user")
+	public Set<Feature> getFeatures() {
+		return features;
+	}
+	public void setFeatures(Set<Feature> features) {
+		this.features = features;
 	}
 }
